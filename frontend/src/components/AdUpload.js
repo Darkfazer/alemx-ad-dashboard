@@ -1,142 +1,124 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// src/components/AdUpload.js
+import { useState } from 'react';
+import {
+  Box,
+  Button,
+  Textarea,
+  Stat,
+  StatLabel,
+  StatNumber,
+  StatHelpText,
+  StatGroup,
+  useToast,
+  Flex,
+  Spinner
+} from '@chakra-ui/react';
+import { AIService } from 'C:\Users\bboyo\alemx-ad-dashboard\frontend\src\utils\aiService.js';
 
-const AdUpload = () => {
-  const [file, setFile] = useState(null);
-  const [imageUrl, setImageUrl] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+const AdUpload = ({ onAdCopyGenerated }) => {
+  const [adCopy, setAdCopy] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [performanceData, setPerformanceData] = useState(null);
+  const [isLoadingStats, setIsLoadingStats] = useState(false);
+  const toast = useToast();
 
-  const isValidUrl = (url) => {
+  const handleGenerateCopy = async () => {
+    setIsGenerating(true);
     try {
-      new URL(url);
-      return true;
-    } catch (_) {
-      return false;
-    }
-  };
-
-  const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) validateAndSetImage(selectedFile);
-  };
-
-  const handleURLChange = (event) => {
-    const url = event.target.value;
-    setImageUrl(url);
-    setFile(null);
-    setError('');
-  };
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    const droppedFile = event.dataTransfer.files[0];
-    if (droppedFile) validateAndSetImage(droppedFile);
-  };
-
-  const validateAndSetImage = (image) => {
-    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    if (!validImageTypes.includes(image.type)) {
-      setError('Please upload a valid image (JPEG, PNG, GIF)');
-      setFile(null);
-      setImageUrl('');
-      return;
-    }
-    setError('');
-    setFile(image);
-    setImageUrl(URL.createObjectURL(image));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    let bannerUrl = '';
-
-    try {
-      if (file) {
-        const formData = new FormData();
-        formData.append('banner', file);
-        
-        const response = await fetch('http://localhost:5000/api/upload', {
-          method: 'POST',
-          body: formData,
+      const result = await AIService.generateAdCopy("product description");
+      if (result.success) {
+        setAdCopy(result.copy);
+        onAdCopyGenerated?.(result.copy);
+        toast({
+          title: 'Ad copy generated!',
+          status: 'success',
+          duration: 2000,
         });
-
-        if (!response.ok) throw new Error('Upload failed');
-        const data = await response.json();
-        bannerUrl = data.url;
-      } else if (imageUrl) {
-        if (!isValidUrl(imageUrl)) {
-          setError('Please enter a valid URL');
-          return;
-        }
-        bannerUrl = imageUrl;
-      } else {
-        setError('Please upload a file or enter a URL');
-        return;
       }
+    } catch (error) {
+      toast({
+        title: 'Generation failed',
+        description: 'Please try again later',
+        status: 'error',
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
-      navigate('/targeting', { state: { bannerUrl } });
-    } catch (err) {
-      setError('File upload failed. Please try again.');
+  const handleGetPerformance = async () => {
+    setIsLoadingStats(true);
+    try {
+      const data = await AIService.getAdPerformance('mock-id');
+      setPerformanceData(data);
+    } catch (error) {
+      toast({
+        title: 'Failed to load stats',
+        status: 'error',
+      });
+    } finally {
+      setIsLoadingStats(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-4 border border-gray-300 rounded-lg">
-      <h2 className="text-xl font-semibold text-center mb-4">Upload Ad Banner</h2>
-      
-      <div
-        className="border-2 border-dashed border-gray-400 p-8 text-center mb-4"
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-      >
-        <input
-          type="file"
-          onChange={handleFileChange}
-          className="hidden"
-          id="fileInput"
-          accept="image/jpeg, image/png, image/gif"
-        />
-        <label htmlFor="fileInput" className="cursor-pointer">
-          Drag and drop your banner here or click to upload
-        </label>
-      </div>
-
-      <p className="text-center mb-4">Or</p>
-
-      <input
-        type="text"
-        placeholder="Enter image URL"
-        className="w-full p-2 border border-gray-300 rounded mb-4"
-        value={imageUrl}
-        onChange={handleURLChange}
+    <Box p={6} borderWidth="1px" borderRadius="lg">
+      <Textarea
+        value={adCopy}
+        onChange={(e) => setAdCopy(e.target.value)}
+        placeholder="Enter your ad copy here..."
+        mb={4}
+        minH="120px"
       />
+      
+      <Flex gap={3} mb={6}>
+        <Button
+          onClick={handleGenerateCopy}
+          colorScheme="teal"
+          leftIcon={<AiIcon />}
+          isLoading={isGenerating}
+          loadingText="Generating..."
+        >
+          Generate AI Ad Copy
+        </Button>
+        
+        <Button
+          onClick={handleGetPerformance}
+          variant="outline"
+          isLoading={isLoadingStats}
+        >
+          Simulate Analytics
+        </Button>
+      </Flex>
 
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors"
-      >
-        Next: Targeting Options
-      </button>
-
-      {imageUrl && (
-        <div className="mt-6 text-center">
-          <h3 className="font-medium mb-2">Preview</h3>
-          <img 
-            src={imageUrl} 
-            alt="Banner preview" 
-            className="max-h-64 w-auto mx-auto rounded-lg shadow-md"
-          />
-        </div>
+      {performanceData && (
+        <StatGroup borderTop="1px solid" borderColor="gray.100" pt={4}>
+          <Stat>
+            <StatLabel>Impressions</StatLabel>
+            <StatNumber>{performanceData.impressions.toLocaleString()}</StatNumber>
+          </Stat>
+          
+          <Stat>
+            <StatLabel>Clicks</StatLabel>
+            <StatNumber>{performanceData.clicks}</StatNumber>
+            <StatHelpText>CTR: {performanceData.ctr}</StatHelpText>
+          </Stat>
+          
+          <Stat>
+            <StatLabel>Engagement</StatLabel>
+            <StatNumber>{performanceData.engagement}</StatNumber>
+          </Stat>
+        </StatGroup>
       )}
-    </form>
+    </Box>
   );
 };
+
+// Simple AI icon component
+const AiIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9h10v2H7z"/>
+  </svg>
+);
 
 export default AdUpload;
