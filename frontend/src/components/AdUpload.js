@@ -13,7 +13,7 @@ import {
   Flex,
   Spinner
 } from '@chakra-ui/react';
-import { AIService } from 'C:\Users\bboyo\alemx-ad-dashboard\frontend\src\utils\aiService.js';
+import { AIService } from '../utils/aiService';
 
 const AdUpload = ({ onAdCopyGenerated }) => {
   const [adCopy, setAdCopy] = useState('');
