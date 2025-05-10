@@ -1,66 +1,93 @@
 **Advertising Dashboard MVP**
+*Overview*
+This project is a minimal viable product (MVP) of an Advertising Dashboard built for the AlemX application process. The goal was to demonstrate rapid development capabilities using AI tools and modern web technologies while focusing on core functionality over polished UI/UX.
 
+**Features**
+*✅ Mock Authentication System*
 
-*Built for AlemX Shortlist Task*
+Simulated login/logout functionality
 
-A minimal prototype for an ad campaign management dashboard, demonstrating rapid development using AI tools and a modern tech stack.
+Session persistence demo
 
-🚀 *Features*
-Mock Authentication
+*✅ Ad Campaign Management*
 
-Basic login/logout flow (simulated).
+Upload ad banners via image files or URLs
 
-Ad Banner Upload
+Set audience targeting parameters:
 
-Upload via image file or URL.
+Age range selection
 
-Audience Targeting
+Location targeting
 
-Age range, location, and interests (mock data).
+Interest categories (mock data)
 
-Campaign Submission
+*✅ Campaign Workflow*
 
-Logs campaign data to console or local storage.
+Submit new campaigns with all required data
 
-Campaign List View
+View campaign list with:
 
-Displays campaign name, date, status, and targeting info.
+Campaign names
 
-**Bonus:**
-AI-generated ad copy (e.g., ChatGPT API).
+Creation dates
 
-Simulated analytics (e.g., fake CTR/impressions).
+Current status
 
-⚙️ **Tech Stack & AI Tools**
-Frontend: [Your frontend framework, e.g., React/Next.js]
+Targeting information
 
-Backend: [Your backend tool, if any, e.g., Firebase/Flask]
+**Tech Stack & AI Tools**
+*🛠️ Development Stack:*
 
-AI Tools:
+Frontend: React.js with Vite
 
-ChatGPT/Copilot: For code generation and debugging.
+Styling: Tailwind CSS
 
-[Other tools you used, e.g., Replit, Cursor]
+State Management: React Context API
 
-📂 **How to Run**
-Clone the repo:
-git clone https://github.com/Darkfazer/alemx-ad-dashboard  
+Mock Backend: Local storage
 
+*🤖 AI Tools Used:*
+
+ChatGPT: For generating boilerplate code, debugging assistance, and documentation
+
+GitHub Copilot: For code suggestions and autocompletion
+
+Cursor: For IDE-powered AI assistance during development
+
+**AI-Powered Features (Bonus)**
+✨ AI-Generated Content:
+
+Automated ad copy suggestions
+
+Smart campaign name generation
+
+📊 Simulated Analytics:
+
+Fake impression data generation
+
+Randomized CTR calculations
+
+Predictive performance metrics
+
+**How AI Accelerated Development**
+AI tools were instrumental in completing this project within the tight 4-hour timeframe:
+
+ChatGPT helped generate the initial project structure and provided solutions for complex state management scenarios
+
+GitHub Copilot significantly reduced typing time and suggested optimal implementations
+
+Cursor AI assisted with debugging and provided alternative approaches to problems
+
+AI tools collectively saved approximately 60% of development time that would have been spent on research and trial-and-error
+
+The most valuable AI contribution was automatically generating the form validation logic and campaign submission handler, which would have taken hours to implement manually.
+
+**Getting Started**
+Clone the repository:
+git clone https://github.com/Darkfazer/alemx-ad-dashboard.git
 
 Install dependencies:
-npm install  # or `pip install -r requirements.txt` for Python  
+npm install
 
-
-Start the app:
-npm run dev  # or `flask run` / `python app.py`  
-
-
-🤖 How AI Accelerated Development
-Code Generation: Used ChatGPT/Copilot to quickly scaffold components and logic.
-
-Debugging: AI helped resolve errors in [specific part, e.g., API integration].
-
-Mock Data: Generated fake campaign data via AI prompts.
-
-🔗 Demo & Submission
-GitHub Repo: https://github.com/Darkfazer/alemx-ad-dashboard
+Run the development server:
+npm run dev
